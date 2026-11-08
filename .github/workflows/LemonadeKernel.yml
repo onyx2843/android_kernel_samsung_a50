@@ -1,36 +1,32 @@
-name: LemonKernel
+name: Kernel Build
 
 on:
-  push:
-    branches:
-      - test
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Out
-        uses: actions/checkout@v3
+      - name: Check out
+        uses: actions/checkout@v7
 
-      - name: Set Current Date
-        uses: szenius/set-timezone@v1.2
+      - name: Set timzeone
+        uses: szenius/set-timezone@v2.0
         with:
-          timezoneLinux: "America/Sao_Paulo"
+          timezoneLinux: "Asia/Ho_Chi_Minh"
 
       - name: Setting up the environment
         run: |
-          sudo apt-get update -y
-          sudo apt-get upgrade -y
-          sudo apt-get install build-essential gcc-aarch64-linux-gnu -y
+             sudo apt-get update
+             sudo apt-get upgrade -y
+             sudo apt-get install -y gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi libssl-dev libncurses-dev flex bison bc jq
 
       - name: Build
         run: ./build.sh
 
-      - name: Upload to Telegram
-        uses: appleboy/telegram-action@master
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
         with:
-          to: ${{ secrets.TELEGRAM_CHAT2_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          document: Lemonade-a505f-*.zip
-          message: "New Lemonade Kernel Update! Download Now!!"
+          name: Lemonade-a505f.zip
+          path: "out/"
